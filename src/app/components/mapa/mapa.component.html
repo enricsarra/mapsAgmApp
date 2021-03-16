@@ -1,18 +1,39 @@
 <!-- https://material.angular.io/components/card/overview -->
+<!-- <h1>{{ title }}</h1> -->
+
+<!-- this creates a google map on the page with the given lat/lng from -->
+<!-- the component as the initial center of the map: -->
+<!-- <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
+    <agm-marker [latitude]="lat" [longitude]="lng">
+
+        <agm-info-window [disableAutoPan]="true">
+            Hi, this is the content of the <strong>info window</strong>
+        </agm-info-window>
+
+    </agm-marker>
+</agm-map> -->
+
 <mat-card>
-    <mat-card-title>Mapa</mat-card-title>
+    <button (click)="borrarTodosLosMarcadores()" mat-raised-button color="warn" class="button-title">
+                <span >Esborrar tots els marcadors</span>
+        </button>
+    <mat-card-title></mat-card-title>
+
     <mat-card-content>
-        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
-            <agm-marker [latitude]="lat" [longitude]="lng">
+        <agm-map (mapClick)="agregarMarcador( $event )" [latitude]="lat" [longitude]="lng" [zoom]="15">
+
+            <agm-marker *ngFor="let marcador of marcadores; let i = index" [latitude]="marcador.lat" [longitude]="marcador.lng">
+
+
                 <agm-info-window>
-                    <strong>Titulo</strong>
+                    <strong>{{ marcador.titulo }}</strong>
                     <p>
-                        lorem, lorem ,lorem
+                        {{ marcador.desc }}
                     </p>
 
                     <div>
-                        <button (click)="editarMarcador(  )" mat-raised-button color="primary">Editar</button>
-                        <button (click)="borrarMarcador()" mat-raised-button color="warn">Borrar</button>
+                        <button (click)="editarMarcador( marcador  )" mat-raised-button color="primary">Editar</button>
+                        <button (click)="borrarMarcador(i)" mat-raised-button color="warn">Borrar</button>
                     </div>
 
                 </agm-info-window>

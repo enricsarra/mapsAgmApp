@@ -1,9 +1,21 @@
-enric {
-    margin-top: 6em;
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.main-container {
+    margin-top: 5px;
+    padding: 10px;
 }
 
 agm-map {
-    height: 300px;
+    height: 70vh;
 }
 
 agm-map-container-inner {
