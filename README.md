@@ -1,5 +1,23 @@
 # Mapas
 
+## Se utiliza los [Cards](https://material.angular.io/components/card/overview) de Angular Material. En el apartado [API](https://material.angular.io/components/card/api) podemos ver las importaciones que tenemos que hacer.
+
+## La documentación de [angular maps](https://angular-maps.com)
+- [Instalación](https://angular-maps.com/api-docs/agm-core/index.html)
+- Importar AgmCoreModule en el módulo [Modules](https://angular-maps.com/api-docs/agm-core/modules/agmcoremodule)
+- [Componenents AgmMap](https://angular-maps.com/api-docs/agm-core/components/agmmap)
+- [Get an API Key](https://developers.google.com/maps/documentation/embed/get-api-key)
+
+
+## Módulos instalados
+- ng add @angular/material
+    - UPDATE src/app/app.module.ts (583 bytes)
+    - UPDATE angular.json (3763 bytes)
+    - UPDATE src/index.html (485 bytes)
+    - UPDATE src/styles.css (181 bytes)
+- npm install @agm/core --save
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.3.
 
 ## Development server
