@@ -21,9 +21,10 @@ export class MapaComponent implements OnInit {
   /* lat: number;
   lng: number; */
   title = 'My first AGM project';
-  lat = 51.678418;
-  lng = 7.809007;
-  zoom = 15;
+  lat = 39.56263457143857
+  ;
+  lng = 2.647812795214848;
+  zoom = 12;
   panelOpenState = false;
   visible:boolean = false;
   visibleInfo:boolean = false;
@@ -40,7 +41,9 @@ export class MapaComponent implements OnInit {
   
 
   constructor( readonly snackBar: MatSnackBar,
-    public dialog: MatDialog ) { 
+    public dialog: MatDialog,
+    private mapsAPILoader: MapsAPILoader,
+    private ngZone: NgZone ) { 
 
     /* const nuevoMarcador = new Marcador(51.678418,7.809007)
     this.marcadores.push(nuevoMarcador) */
@@ -54,13 +57,13 @@ export class MapaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setCurrentLocation();
+    this.loadPlacesAutocomplete()
+    // this.setCurrentLocation();
   }
 
   // menu per search, marcadors i esborrar marcadors
   public isVisible() {
     this.visible = !this.visible
-    console.log('visible', this.visible)
   }
 
  // text ajuda 
@@ -73,19 +76,15 @@ export class MapaComponent implements OnInit {
   // Get Current Location Coordinates
   private setCurrentLocation() {
 
-    // If you read the error message correctly, you need HTTPS to test Geolocation with Safari. You can testet with Chrome.
-
-
-
-
+    
      if ('geolocation' in navigator) {  
       
       navigator.geolocation.getCurrentPosition((position) => {
-      
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
-        this.zoom = 15;
+        // this.zoom = 12;
 
+       this.getAddress(this.lat, this.lng);
 
         if ( this.marcadores.length == 0) {
           
@@ -101,12 +100,7 @@ export class MapaComponent implements OnInit {
       });
     }
     
-/*     navigator.geolocation.getCurrentPosition(function(){
-      alert('Location accessed')
-},function(){
-     alert('User not allowed')
-},{timeout:10000})
- */
+
 
   }
   
@@ -114,11 +108,18 @@ export class MapaComponent implements OnInit {
 
     const coords: { lat: number, lng: number } = evento.coords;
 
-    const nuevoMarcador = new Marcador( coords.lat, coords.lng );
+    this.addMarcador(coords.lat, coords.lng );
 
+    /* const nuevoMarcador = new Marcador( coords.lat, coords.lng );
+    this.marcadores.push( nuevoMarcador );  
+    this.guardarStorage();
+ */
+  }
+
+  addMarcador(lat, lng) {
+    const nuevoMarcador = new Marcador(lat,lng );
+    this.getAddress(nuevoMarcador.lat, nuevoMarcador.lng)
     this.marcadores.push( nuevoMarcador );
-     
-
     this.guardarStorage();
 
   }
@@ -184,41 +185,64 @@ export class MapaComponent implements OnInit {
   }
 
   irMarcador(marcador:Marcador) {
-    // console.log('marcador', marcador)
     this.lat = marcador.lat;
-    this.lng = marcador.lng
-    
+    this.lng = marcador.lng 
   }
 
+ 
+loadPlacesAutocomplete() {
 
+  this.mapsAPILoader.load().then(() => {
+    this.setCurrentLocation();
+    this.geoCoder = new google.maps.Geocoder;
 
-  // nou
+    let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
+    autocomplete.addListener("place_changed", () => {
+      this.ngZone.run(() => {
+        //get the place result
+        let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+      
+        //verify result
+        if (place.geometry === undefined || place.geometry === null) {
+          return;
+        }
 
-  // Get Current Location Coordinates
-  private New() {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
-        this.zoom = 8;
-        this.getAddress(this.latitude, this.longitude);
+        //set latitude, longitude and zoom
+        this.lat = place.geometry.location.lat();
+        this.lng = place.geometry.location.lng();
+        // this.zoom = 12;
+        this.addMarcador(this.lat, this.lng)
+        
       });
-    }
-  }
-  markerDragEnd($event: MouseEvent) {
-    // console.log($event);
-    this.latitude = $event.coords.lat;
-    this.longitude = $event.coords.lng;
-    this.getAddress(this.latitude, this.longitude);
+    });
+  });
+
+}
+
+
+
+
+
+
+
+  markerDragEnd($event: MouseEvent, marcador:Marcador) {
+    this.lat = $event.coords.lat;
+    this.lng = $event.coords.lng;
+    this.getAddress(this.lat, this.lng);
+    marcador.lat = this.lat;
+    marcador.lng = this.lng;
+    this.guardarStorage();
+     
+      this.snackBar.open('Marcador mogut actualitzat', 'Tancar', { duration: 1000 });
   }
 
   getAddress(latitude, longitude) {
     this.geoCoder.geocode({ 'location': { lat: latitude, lng: longitude } }, (results, status) => {
-     // console.log(results);
+      console.log('results',results);
       //console.log(status);
       if (status === 'OK') {
         if (results[0]) {
-          this.zoom = 12;
+          //this.zoom = 12;
           this.address = results[0].formatted_address;
         } else {
           window.alert('No results found');
