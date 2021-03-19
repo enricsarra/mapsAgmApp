@@ -1,8 +1,10 @@
 agm-map {
-    height: 70vh;
+    height: 90vh;
+    position: relative;
 }
 
-agm-map-container-inner {
+
+/* agm-map-container-inner {
     width: inherit;
     height: inherit;
 }
@@ -10,3 +12,109 @@ agm-map-container-inner {
 agm-map-content {
     display: none;
 }
+ */
+
+.visualitzar-search-marcadors {
+    background-color: rgb(198, 202, 171);
+    color: white;
+    border-radius: 5px;
+    top: 12px;
+    left: 19px;
+    padding: 5px;
+    position: fixed;
+    z-index: 999;
+}
+
+.info {
+    background-color: rgb(198, 202, 171);
+    color: white;
+    border-radius: 5px;
+    top: 12px;
+    right: 19px;
+    padding: 5px;
+    position: fixed;
+    z-index: 999;
+}
+
+.div-visible {
+    background-color: rgb(247, 242, 242);
+    border-radius: 5px;
+    top: 70px;
+    left: 0px;
+    padding: 10px;
+    position: fixed;
+    z-index: 999;
+    max-height: 250px;
+    overflow: scroll;
+}
+
+.div-visible-info {
+    background-color: rgb(247, 242, 242);
+    border-radius: 5px;
+    top: 70px;
+    right: 0px;
+    padding: 10px;
+    position: fixed;
+    z-index: 999;
+    max-height: 250px;
+    overflow: scroll;
+}
+
+mat-form-field {
+    background-color: rgb(220, 224, 198);
+    /* background-color: rgb(238, 226, 226); */
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+}
+
+mat-expansion-panel {
+    background-color: rgb(220, 224, 198);
+    border-radius: 5px;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.esborrar-tots {
+    background-color: rgb(220, 224, 198);
+    color: black;
+    border-radius: 5px;
+    margin-top: 15px;
+    padding: 5px;
+}
+
+.scroll {
+    overflow: scroll;
+}
+
+
+/* mat-form-field {
+    background-color: rgb(238, 230, 230);
+    border-radius: 5px;
+    top: 70px;
+    left: 0px;
+    padding: 10px;
+    position: fixed;
+    z-index: 999;
+}
+
+.mat-expansion-panel {
+    background-color: rgb(238, 226, 226);
+    border-radius: 5px;
+    top: 150px;
+    left: 0px;
+    padding: 10px;
+    position: fixed;
+    z-index: 999;
+}
+
+.esborrar-tots {
+    background-color: rgb(238, 226, 226);
+    color: black;
+    border-radius: 5px;
+    top: 220px;
+    left: 0px;
+    padding: 5px;
+    position: fixed;
+    z-index: 999;
+} */

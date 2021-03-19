@@ -13,16 +13,111 @@
     </agm-marker>
 </agm-map> -->
 
-<mat-card>
-    <button (click)="borrarTodosLosMarcadores()" mat-raised-button color="warn" class="button-title">
-                <span >Esborrar tots els marcadors</span>
-        </button>
-    <mat-card-title></mat-card-title>
 
+
+<!-- Visible cercar i marcadors -->
+
+<mat-icon *ngIf="!visible" (click)="isVisible()" aria-hidden="false" aria-label="Example home icon" class="visualitzar-search-marcadors">menu</mat-icon>
+
+<mat-icon *ngIf="visible" (click)="isVisible()" aria-hidden="false" aria-label="Example home icon" class="visualitzar-search-marcadors">clear</mat-icon>
+
+
+
+
+
+<!-- Ajuda - info -->
+<mat-icon *ngIf="!visibleInfo" (click)="isVisibleInfo()" aria-hidden="false" aria-label="Example home icon" class="info">info</mat-icon>
+
+<mat-icon *ngIf="visibleInfo" (click)="isVisibleInfo()" aria-hidden="false" aria-label="Example home icon" class="info">clear</mat-icon>
+
+
+
+
+
+
+
+<!-- Menú accions: search, marcadors, esborrar tots -->
+<div class="div-visible" [ngStyle]="{'visibility':visible ? 'visible' : 'hidden'}">
+    <!-- Cercar -->
+    <form class="example-form">
+        <mat-form-field appearance="legacy">
+            <mat-label>Enter address</mat-label>
+            <input matInput type="text" class="form-control" (keydown.enter)="$event.preventDefault()" placeholder="Search Nearest Location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" #search>
+        </mat-form-field>
+    </form>
+
+    <div class="scroll">
+        <!-- Llista Marcadors -->
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+
+                <!-- <mat-icon aria-hidden="false" aria-label="Example home icon">explore</mat-icon> -->
+                <mat-panel-title color="primary">
+                    Anar a Marcadors
+                </mat-panel-title>
+
+            </mat-expansion-panel-header>
+
+            <mat-nav-list>
+                <mat-list-item *ngFor="let marcador of marcadores">
+
+                    <button mat-raised-button color="primary" (click)="irMarcador(marcador)">{{marcador.titulo}}</button>
+
+
+                </mat-list-item>
+            </mat-nav-list>
+
+
+        </mat-expansion-panel>
+    </div>
+
+    <!-- esborrat tots els marcadors -->
+    <mat-panel-title class="esborrar-tots">
+        <mat-icon (click)="borrarTodosLosMarcadores()" aria-hidden="false" aria-label="Example home icon">delete_forever</mat-icon>
+
+        Esborrar marcadors
+    </mat-panel-title>
+
+
+</div>
+
+<!-- Infor: texte ajuda  -->
+<div class="div-visible-info" [ngStyle]="{'visibility':visibleInfo ? 'visible' : 'hidden'}">
+    <mat-card>
+        <mat-card-title>Ajuda</mat-card-title>
+        <mat-card-subtitle>Qué pots fer</mat-card-subtitle>
+        <mat-card-content>
+
+            <mat-list dense>
+                <mat-list-item> <strong>Afegir Marcador: </strong> clicar al mapa </mat-list-item>
+                <mat-list-item> <strong>Editar/Esborrar Marcador:</strong> clicar al marcador
+                </mat-list-item>
+                <mat-list-item> <strong>Cercar:</strong> Clica a
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">menu</mat-icon>
+                </mat-list-item>
+
+                <mat-list-item> <strong>Anar a marcadors:</strong> Clica a
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">menu</mat-icon>
+                </mat-list-item>
+
+                <mat-list-item> <strong>Esborrar tots els marcadors:</strong> Clica a
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">menu</mat-icon>
+                </mat-list-item>
+
+
+            </mat-list>
+        </mat-card-content>
+        <!-- <mat-card-footer>footer  </mat-card-footer> -->
+    </mat-card>
+</div>
+
+
+<!-- Mapa -->
+<mat-card>
     <mat-card-content>
         <agm-map (mapClick)="agregarMarcador( $event )" [latitude]="lat" [longitude]="lng" [zoom]="15">
 
-            <agm-marker *ngFor="let marcador of marcadores; let i = index" [latitude]="marcador.lat" [longitude]="marcador.lng">
+            <agm-marker *ngFor="let marcador of marcadores; let i = index" [latitude]="marcador.lat" [longitude]="marcador.lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)">
 
 
                 <agm-info-window>
@@ -40,20 +135,14 @@
 
             </agm-marker>
 
+
+
+
         </agm-map>
+
+
+
     </mat-card-content>
+
+
 </mat-card>
-
-<!-- <form [formGroup]="forma">
-
-    <mat-form-field>
-        <input matInput placeholder="Título" formControlName="titulo">
-    </mat-form-field>
-
-    <mat-form-field>
-        <textarea rows="3" matInput placeholder="Descripción" formControlName="desc"></textarea>
-    </mat-form-field>
-
-    <button (click)="guardarCambios()" mat-raised-button color="primary">Editar</button>
-    <button (click)="onNoClick()" mat-raised-button color="warn">Cancelar</button>
-</form> -->

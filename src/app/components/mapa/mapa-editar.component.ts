@@ -32,6 +32,7 @@ export class MapaEditarComponent implements OnInit {
   guardarCambios() {
 
     this.dialogRef.close(this.forma.value);
+    //console.log('valor formulari',this.forma.value)
 
   }
 
