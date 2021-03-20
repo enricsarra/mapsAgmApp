@@ -107,7 +107,7 @@
 <mat-card>
 
     <mat-card-content>
-        <agm-map (mapClick)="agregarMarcador( $event )" [latitude]="lat" [longitude]="lng" [zoom]="12">
+        <agm-map (mapClick)="agregarMarcador( $event )" [latitude]="lat" [longitude]="lng" [zoom]="12" [fullscreenControl]='true' [mapTypeControl]='true'>
 
             <agm-marker *ngFor="let marcador of marcadores; let i = index" [latitude]="marcador.lat" [longitude]="marcador.lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event, marcador)">
 

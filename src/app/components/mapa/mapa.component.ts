@@ -25,6 +25,7 @@ export class MapaComponent implements OnInit {
   ;
   lng = 2.647812795214848;
   zoom = 12;
+
   panelOpenState = false;
   visible:boolean = false;
   visibleInfo:boolean = false;
