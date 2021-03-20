@@ -21,7 +21,8 @@ export class MapaEditarComponent implements OnInit {
      // console.log( data  );
       this.forma = fb.group({
         'titulo': data.titulo,
-        'desc' : data.desc
+        'desc' : data.desc,
+        'address' : data.address
       });
 
     }

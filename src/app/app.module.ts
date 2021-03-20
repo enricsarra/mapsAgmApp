@@ -13,7 +13,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 
 import { MapaComponent } from './components/mapa/mapa.component';
 import { MapaEditarComponent } from './components/mapa/mapa-editar.component';
-import { environment} from "../environments/environment"
+import { environment} from "../environments/environment";
+import { ServiceWorkerModule } from '@angular/service-worker'
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { environment} from "../environments/environment"
       `${environment.APIKEYGOOGLEMAPS}`,
       libraries: ['places']
     }),
-    AppRoutingModule
+    AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
  
   ],
   providers: [],

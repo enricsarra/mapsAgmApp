@@ -29,10 +29,11 @@ export class MapaComponent implements OnInit {
   visible:boolean = false;
   visibleInfo:boolean = false;
 
-  // nou
-  latitude: number;
-  longitude: number;
+  /* latitude: number;
+  longitude: number; */
   address: string;
+  titolMarcador: string;
+  descripcioMarcador: string;
   private geoCoder;
 
   @ViewChild('search')
@@ -44,9 +45,6 @@ export class MapaComponent implements OnInit {
     public dialog: MatDialog,
     private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone ) { 
-
-    /* const nuevoMarcador = new Marcador(51.678418,7.809007)
-    this.marcadores.push(nuevoMarcador) */
 
     if ( localStorage.getItem('marcadores') ) {
       
@@ -84,15 +82,12 @@ export class MapaComponent implements OnInit {
         this.lng = position.coords.longitude;
         // this.zoom = 12;
 
-       this.getAddress(this.lat, this.lng);
+       
 
         if ( this.marcadores.length == 0) {
-          
-          const nuevoMarcador = new Marcador( this.lat, this.lng );
-          this.marcadores.push( nuevoMarcador ) 
-          this.guardarStorage();}
-          else {
-          
+          this.getAddressNew(this.lat, this.lng);
+        }
+          else {       
             this.guardarStorage()
           }
 
@@ -106,41 +101,33 @@ export class MapaComponent implements OnInit {
   
   agregarMarcador( evento ) {
 
+    console.log('event-agregar-marcador', evento);
+
     const coords: { lat: number, lng: number } = evento.coords;
 
     this.addMarcador(coords.lat, coords.lng );
 
-    /* const nuevoMarcador = new Marcador( coords.lat, coords.lng );
-    this.marcadores.push( nuevoMarcador );  
-    this.guardarStorage();
- */
   }
 
   addMarcador(lat, lng) {
-    const nuevoMarcador = new Marcador(lat,lng );
-    this.getAddress(nuevoMarcador.lat, nuevoMarcador.lng)
-    this.marcadores.push( nuevoMarcador );
-    this.guardarStorage();
-
+    this.getAddressNew(lat, lng)
+    this.snackBar.open('Marcador guardat', 'Tancar', { duration: 500 }); 
   }
 
   guardarStorage() {
+    console.log('passa per guardar storage')
     // en localStorage solament es pot grabar strings
     localStorage.setItem('marcadores', JSON.stringify( this.marcadores ) );
-    this.snackBar.open('Marcador guardat', 'Tancar', { duration: 1000 }); 
+   // this.snackBar.open('Marcador guardat', 'Tancar', { duration: 500 }); 
     
   }
-
-
 
     // borrarMarcador( i: number ) {
     borrarMarcador(i:number) {
     this.marcadores.splice(i, 1); // eliminem el marcador
     this.guardarStorage();
     // component snackBar de Material
-   this.snackBar.open('Marcador esborrat', 'Tancar', { duration: 1000 })
-   
-
+   this.snackBar.open('Marcador esborrat', 'Tancar', { duration: 500 })
   }
 
 
@@ -148,7 +135,7 @@ export class MapaComponent implements OnInit {
 
     const dialogRef = this.dialog.open( MapaEditarComponent , {
       width: '250px',
-      data: { titulo: marcador.titulo, desc: marcador.desc }
+      data: { titulo: marcador.titulo, desc: marcador.desc, address: marcador.address }
     });
 
     // console.log('marcador actual',marcador );
@@ -167,11 +154,12 @@ export class MapaComponent implements OnInit {
 
       marcador.titulo = result.titulo;
       marcador.desc = result.desc;
+      marcador.address = result.address;
       /*  console.log('marcador modificat', marcador)
       console.log('marcadores despues modif', this.marcadores) */
       this.guardarStorage();
      
-      this.snackBar.open('Marcador actualitzat', 'Tancar', { duration: 1000 });
+      this.snackBar.open('Marcador actualitzat', 'Tancar', { duration: 500 });
 
     });
 
@@ -180,7 +168,7 @@ export class MapaComponent implements OnInit {
   borrarTodosLosMarcadores () {     
       this.marcadores = [];
       localStorage.removeItem('marcadores');
-      this.snackBar.open('Tots els marcadors esborrats', 'Tancar', { duration: 1000 })
+      this.snackBar.open('Tots els marcadors esborrats', 'Tancar', { duration: 500 })
    
   }
 
@@ -228,27 +216,48 @@ loadPlacesAutocomplete() {
   markerDragEnd($event: MouseEvent, marcador:Marcador) {
     this.lat = $event.coords.lat;
     this.lng = $event.coords.lng;
-    this.getAddress(this.lat, this.lng);
-    marcador.lat = this.lat;
-    marcador.lng = this.lng;
-    this.guardarStorage();
-     
-      this.snackBar.open('Marcador mogut actualitzat', 'Tancar', { duration: 1000 });
+    this.getAddressNew(this.lat, this.lng, marcador);    
+    this.snackBar.open('Marcador mogut actualitzat', 'Tancar', { duration: 500 });
   }
 
-  getAddress(latitude, longitude) {
+  
+  getAddressNew(latitude, longitude, marcador?) {
     this.geoCoder.geocode({ 'location': { lat: latitude, lng: longitude } }, (results, status) => {
-      console.log('results',results);
+      // console.log('results',results);
       //console.log(status);
+      
+
       if (status === 'OK') {
         if (results[0]) {
           //this.zoom = 12;
           this.address = results[0].formatted_address;
+          this.titolMarcador = results[0].address_components[2].short_name;  
+          this.descripcioMarcador = results[0].address_components[1].short_name;
+
+          if (marcador) {
+            marcador.lat = latitude;
+            marcador.lng = longitude;
+            marcador.titulo = this.titolMarcador;
+            marcador.desc = this.descripcioMarcador;
+            marcador.address = this.address;       
+            this.guardarStorage();
+            
+          } else {
+            
+          const nuevoMarcador = new Marcador( latitude, longitude )
+          nuevoMarcador.titulo = this.titolMarcador;
+          nuevoMarcador.desc = this.descripcioMarcador;
+          nuevoMarcador.address = this.address; 
+        
+          this.marcadores.push( nuevoMarcador ) 
+          this.guardarStorage();
+          }
+          
         } else {
-          window.alert('No results found');
+          window.alert('Sense resultats');
         }
       } else {
-        window.alert('Geocoder failed due to: ' + status);
+        window.alert('El geocodificador ha fallat a causa de: ' + status);
       }
 
     });
